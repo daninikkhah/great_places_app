@@ -1,4 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:great_places_app/providers/places.dart';
 import '../widgets/image_input.dart';
 
 class AddPlaceScreen extends StatefulWidget {
@@ -9,6 +12,18 @@ class AddPlaceScreen extends StatefulWidget {
 
 class _AddPlaceScreenState extends State<AddPlaceScreen> {
   TextEditingController _controller = TextEditingController();
+  File _image;
+  void _getImage(File image) => _image = image;
+  void _submit() {
+    if (_controller == null || _image == null) {
+      print('return');
+      return;
+    }
+    Provider.of<Places>(context, listen: false)
+        .addPlace(image: _image, title: _controller.text);
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,9 +39,12 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                 padding: const EdgeInsets.all(10),
                 child: Column(
                   children: [
-                    TextField(),
+                    TextField(
+                      controller: _controller,
+                      //onSubmitted: , todo or not todo ?
+                    ),
                     const SizedBox(height: 10),
-                    ImageInput(),
+                    ImageInput(_getImage),
                   ],
                 ),
               ),
@@ -35,7 +53,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
           RaisedButton.icon(
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             color: Theme.of(context).accentColor,
-            onPressed: () {},
+            onPressed: _submit,
             icon: const Icon(Icons.add),
             label: const Text('Add Place'),
           ),
