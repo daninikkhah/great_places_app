@@ -7,7 +7,7 @@ class Place {
       {@required this.id,
       @required this.title,
       @required this.image,
-      @required this.location});
+      this.location});
   final String id;
   final String title;
   final PlaceLocation location;

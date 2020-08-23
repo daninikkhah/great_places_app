@@ -19,24 +19,34 @@ class PlacesListScreen extends StatelessWidget {
         ],
       ),
       body: Center(
-        child: Consumer<Places>(
-          child: Center(
-            child: const Text('No image yet'),
-          ),
-          builder: (context, places, child) => places.placesList.length < 1
-              ? child
-              : ListView.builder(
-                  itemCount: places.placesList.length,
-                  itemBuilder: (context, i) => Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        radius: 30,
-                        backgroundImage: FileImage(places.placesList[i].image),
-                      ),
-                      title: Text(places.placesList[i].title),
-                    ),
+        child: FutureBuilder(
+          future: Provider.of<Places>(context, listen: false).fetchPlaces(),
+          builder: (context, snapshot) => snapshot.connectionState ==
+                  ConnectionState.waiting
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : Consumer<Places>(
+                  child: Center(
+                    child: const Text('No image yet'),
                   ),
+                  builder: (context, places, child) =>
+                      places.placesList.length < 1
+                          ? child
+                          : ListView.builder(
+                              itemCount: places.placesList.length,
+                              itemBuilder: (context, i) => Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ListTile(
+                                  leading: CircleAvatar(
+                                    radius: 30,
+                                    backgroundImage:
+                                        FileImage(places.placesList[i].image),
+                                  ),
+                                  title: Text(places.placesList[i].title),
+                                ),
+                              ),
+                            ),
                 ),
         ),
       ),
